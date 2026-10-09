@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>StudyHall — AI Study Space</title>
+<style>
+:root{--bg:#0e1110;--p:#151a18;--p2:#1d2421;--ln:#2a3430;--tx:#ecefed;--mu:#9aa6a1;--ac:#0b8a6f;--on:#fff;--ok:#5fb98a;--bad:#e5706f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+:root[data-th=blue]{--bg:#0d0f13;--p:#14171e;--p2:#1c202a;--ln:#2a3040;--tx:#eceef3;--mu:#9a9fb0;--ac:#4a74d4}
+*,*:before,*:after{box-sizing:inherit}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--tx);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#app{display:flex;height:100%}
+#side{width:272px;flex:none;background:var(--p);border-right:1px solid var(--ln);overflow-y:auto;padding:16px 12px}
+#side h1{font-size:17px;margin:0 6px 12px}
+details{margin-bottom:6px}
+summary{cursor:pointer;color:var(--mu);font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:8px 6px}
+.cl{display:block;width:100%;text-align:left;background:none;border:0;border-radius:8px;padding:8px 10px;cursor:pointer}
+.cl:hover{background:var(--p2)}
+.cl.on{background:var(--p2);box-shadow:inset 3px 0 var(--ac)}
+#mn{flex:1;min-width:0;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--ln)}
+header h2{font-size:16px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+select,input,textarea,button{font:inherit;color:var(--tx);background:var(--p2);border:1px solid var(--ln);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}
+button:hover{border-color:var(--mu)}
+button:disabled{opacity:.5;cursor:default}
+.pri{background:var(--ac);border-color:var(--ac);color:var(--on);font-weight:600}
+nav{display:flex;gap:4px;padding:6px 16px 0;border-bottom:1px solid var(--ln);overflow-x:auto}
+nav button{border:0;border-radius:8px 8px 0 0;background:none;color:var(--mu);white-space:nowrap}
+nav button.on{color:var(--tx);box-shadow:inset 0 -2px var(--ac)}
+#v{flex:1;overflow-y:auto;padding:18px 16px 0;max-width:860px;width:100%;margin:0 auto}
+.pg{padding-bottom:28px}
+.m{margin:0 0 14px;padding:12px 14px;border-radius:14px;background:var(--p);overflow-wrap:anywhere}
+.m.u{background:var(--p2);margin-left:12%}
+pre{background:#111;padding:10px;border-radius:8px;overflow-x:auto}
+code{background:#111;padding:1px 5px;border-radius:5px}
+h4{margin:10px 0 2px}
+.acts,.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.chips button{font-size:13px;padding:5px 12px;border-radius:99px;color:var(--mu)}
+.bar{position:sticky;bottom:0;background:var(--bg);display:flex;gap:8px;padding:10px 0 14px}
+.bar textarea{flex:1;resize:none}
+.card{background:var(--p);border:1px solid var(--ln);border-radius:14px;padding:16px;margin-bottom:14px;overflow-wrap:anywhere}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+label.f{display:block;font-size:12px;color:var(--mu)}
+label.f select,label.f input{width:100%;margin-top:4px}
+.ch{display:block;padding:9px 12px;margin:6px 0;border:1px solid var(--ln);border-radius:10px;cursor:pointer}
+.ch:hover{background:var(--p2)}
+.ok{border-color:var(--ok)!important;background:#5fb98a22}
+.no{border-color:var(--bad)!important;background:#e5706f22}
+textarea.o{width:100%;min-height:90px;margin-top:8px}
+.big{font-size:44px;font-weight:700}
+.fc{cursor:pointer}
+#sc{display:none}
+#hb{display:none}
+.focus #side,.focus #hb{display:none}
+@media(max-width:800px){
+#hb{display:block}
+#side{position:fixed;z-index:9;top:0;bottom:0;left:0;padding-top:calc(16px + env(safe-area-inset-top,0px));transform:translateX(-100%);transition:transform .2s}
+.so #side{transform:none}
+.so #sc{display:block;position:fixed;inset:0;background:#0009;z-index:8}
+.m.u{margin-left:4%}
+}
+.ft{margin-top:18px;padding:12px 6px 0;border-top:1px solid var(--ln);color:var(--mu);font-size:12px}
+.thm{display:flex;gap:8px;margin-top:8px}
+.sw{display:flex;align-items:center;gap:6px;font-size:13px;padding:6px 10px}
+.sw i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.sw.on{border-color:var(--ac)}
+.empty{text-align:center;padding:12vh 12px;color:var(--mu)}
+.empty h2{color:var(--tx);margin:0 0 6px}
+#ob{display:none}
+#hb svg{display:block}
+@media(max-width:800px){#ob{display:inline-block}}
+</style></head>
+<body>
+<div id="app">
+<aside id="side"></aside><div id="sc"></div>
+<div id="mn">
+<header><button id="hb" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4h14M2 9h14M2 14h14"/></svg></button><h2 id="t"></h2><select id="lv" title="Level"></select><button id="fm" title="Hide the sidebar for fewer distractions">Focus</button></header>
+<nav><button data-v="tutor">Tutor</button><button data-v="practice">Practice</button><button data-v="notes">Notes</button><button data-v="prog">Progress</button></nav>
+<main id="v"></main>
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+/* Fill these in (see README). The anon key is safe to expose; NEVER put an AI key here. */
+const CFG={SUPABASE_URL:"",SUPABASE_ANON_KEY:"",API_URL:""};
+const sb=CFG.SUPABASE_URL?supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_ANON_KEY):null;
+let USER=null;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const md=s=>esc(s).replace(/```([\s\S]*?)```/g,"<pre>$1</pre>").replace(/`([^`]+)`/g,"<code>$1</code>").replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>").replace(/^#{1,3} (.*)$/gm,"<h4>$1</h4>").replace(/^[-*] /gm,"• ").replace(/\n/g,"<br>");
+const GR=[
+["Math","n",["Algebra 1","Geometry","Algebra 2","Precalculus","Calculus","Multivariable Calculus","Statistics","Linear Algebra"]],
+["Science","n",["Biology","Chemistry","Physics","Environmental Science"]],
+["Engineering","n",["Statics & Mechanics","Circuits","Electronics","Aerodynamics","Intro Programming","Thermodynamics"]],
+["History","n",["US History","World History","European History","Government"]],
+["AP Courses","ap",["AP Precalculus","AP Calculus AB","AP Calculus BC","AP Statistics","AP Biology","AP Chemistry","AP Physics 1","AP Physics C: Mechanics","AP Physics C: E&M","AP US History","AP World History","AP European History","AP US Government"]],
+["Test Prep Math","t",["SAT Math","ACT Math","PSAT Math","GRE Quant"]]];
+const LV=["Beginner","Intermediate","Advanced","University"];
+const CH=[["Teach me","Teach me the most important core concepts of "],["Worked example","Show me a fully worked example problem from "],["Explain simply","Explain the hardest idea in this class simply: "],["Quiz me","Quiz me one question at a time on "],["Study plan","Make me a 1-week study plan for "]];
+const ST={cls:"",k:"n",lvl:"Intermediate",th:"pine",view:"tutor",chat:[],notes:"",imgs:[],quiz:null,open:new Set()};
+const hist=()=>{try{return JSON.parse(localStorage.getItem("sh")||"[]")}catch(e){return[]}};
+const addH=r=>{try{localStorage.setItem("sh",JSON.stringify([...hist(),r].slice(-100)))}catch(e){}if(sb&&USER)sb.from("results").insert({cls:r.c,lvl:r.l,pct:r.p,n:r.n}).then(()=>{})};
+async function getH(){
+  if(sb&&USER){const {data}=await sb.from("results").select("cls,lvl,pct,n,created_at").order("created_at").limit(100);if(data)return data.map(r=>({c:r.cls,l:r.lvl,p:r.pct,n:r.n,d:r.created_at}))}
+  return hist();
+}
+const acct=()=>!sb?"":USER?`<div class="ft">Signed in as ${esc(USER.email||"student")}<div class="thm"><button data-a="out">Sign out</button></div></div>`:`<div class="ft">Sign in to save progress and use the AI<div class="thm"><button class="pri" data-a="goog">Continue with Google</button></div><input id="em" type="email" placeholder="or your email" style="width:100%;margin-top:8px"><div class="thm"><button data-a="mail">Email me a link</button></div><div id="am" style="margin-top:6px"></div></div>`;
+async function act(a){
+  if(a=="out")return sb.auth.signOut();
+  const to=location.origin+location.pathname;
+  if(a=="goog")return sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:to}});
+  const em=$("#em").value.trim(),m=$("#am");
+  if(!em){m.textContent="Enter your email first.";return}
+  const {error}=await sb.auth.signInWithOtp({email:em,options:{emailRedirectTo:to}});
+  m.textContent=error?error.message:"Check your email for the sign-in link.";
+}
+const im=()=>ST.imgs.length?{images:ST.imgs}:{};
+const toB64=f=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>{const k=Math.min(1,1600/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=i.width*k;c.height=i.height*k;c.getContext("2d").drawImage(i,0,0,c.width,c.height);res({type:"image/jpeg",data:c.toDataURL("image/jpeg",.85).split(",")[1]})};i.onerror=rej;i.src=URL.createObjectURL(f)});
+async function ask(inp,o={}){
+  const ses=sb?(await sb.auth.getSession()).data.session:null;
+  if(!ses)throw Error("Sign in (open the menu) to use the AI features.");
+  const images=await Promise.all((o.images||[]).map(toB64));
+  const r=await fetch(CFG.API_URL,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+ses.access_token},body:JSON.stringify({input:inp,images,json:!!o.json})});
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok)throw Error(j.error||"AI request failed ("+r.status+")");
+  if(o.onText)o.onText({text:j.text});
+  if(!o.json)return {text:j.text};
+  const t=j.text,a=t.search(/[\[{]/);
+  return JSON.parse(t.slice(a,Math.max(t.lastIndexOf("]"),t.lastIndexOf("}"))+1));
+}
+const sty=()=>ST.k=="ap"?"AP exam level: follow the College Board course framework, including free-response style and scoring rubrics":ST.k=="t"?"exam prep for the "+ST.cls+": match real question style, pacing and strategy such as elimination and time-savers":ST.lvl+" level"+(ST.lvl=="University"?" (rigorous, derivation-oriented where relevant)":ST.lvl=="Beginner"?" (assume no prior knowledge, build intuition first)":"");
+const SYS=()=>`You are a patient, encouraging personal tutor for a student studying ${ST.cls}. Level and style: ${sty()}. Teach step by step: core idea first, then a worked example with every step explained, then one short check-for-understanding question. Flag common mistakes and use current best-practice methods. Write math in plain text/unicode (x², √, ∫), never LaTeX. Keep it concise with short paragraphs and bullets. If the student attempts a problem, give hints before revealing answers.`;
+
+function side(){
+  const sc=$("#side").scrollTop;
+  $("#side").innerHTML="<h1>StudyHall</h1>"+GR.map(([g,k,a])=>`<details data-g="${g}"${ST.open.has(g)?" open":""}><summary>${g}</summary>${a.map(c=>`<button class="cl${c==ST.cls?" on":""}" data-c="${esc(c)}" data-k="${k}" data-g="${g}">${esc(c)}</button>`).join("")}</details>`).join("")+acct()+`<div class="ft">Theme<div class="thm"><button class="sw${ST.th=="pine"?" on":""}" data-th="pine"><i style="background:#0b8a6f"></i>Pine green</button><button class="sw${ST.th=="blue"?" on":""}" data-th="blue"><i style="background:#4a74d4"></i>Cornflower</button></div></div>`;
+  $("#side").scrollTop=sc;
+}
+function render(){
+  side();$("#t").textContent=ST.cls||"StudyHall";$("#lv").style.display=ST.cls&&ST.k=="n"?"":"none";
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.v==ST.view));
+  if(!ST.cls&&ST.view!="prog")vEmpty();else ({tutor:vTutor,practice:vPractice,notes:vNotes,prog:vProg})[ST.view]();
+  $("#v").scrollTop=0;
+}
+
+function vEmpty(){$("#v").innerHTML='<div class="empty"><h2>What are you studying?</h2><p>Open a section in the sidebar and choose a class to begin.</p><button id="ob" class="pri">Open sidebar</button></div>';$("#ob").onclick=()=>document.body.classList.add("so")}
+/* ---------- Tutor ---------- */
+const bub=(r,t)=>{const d=document.createElement("div");d.className="m"+(r=="user"?" u":"");d.innerHTML=md(t);$("#ms").append(d);$("#v").scrollTop=1e9;return d};
+function vTutor(){
+  $("#v").innerHTML=`<div class="chips">${CH.map((c,i)=>`<button data-i="${i}">${c[0]}</button>`).join("")}</div><div id="ms"></div><div class="bar"><textarea id="ti" rows="1" placeholder="Ask your tutor anything, e.g. “How do I factor trinomials?”"></textarea><button class="pri" id="sd">Send</button></div>`;
+  if(!ST.chat.length)bub("assistant",`Hi! I'm your ${esc(ST.cls)} tutor. Ask me a question, paste a problem, or tap a button above. I'll teach step by step with examples.`);
+  ST.chat.forEach(m=>bub(m.role,m.content));
+  $(".chips").onclick=e=>{const i=e.target.dataset.i;if(i)chat(CH[i][1]+ST.cls)};
+  $("#sd").onclick=()=>{const t=$("#ti").value.trim();if(t){$("#ti").value="";chat(t)}};
+  $("#ti").onkeydown=e=>{if(e.key=="Enter"&&!e.shiftKey&&!/Mobi|Android/.test(navigator.userAgent)){e.preventDefault();$("#sd").click()}};
+}
+async function chat(t){
+  if(ST.view!="tutor"){ST.view="tutor";render()}
+  ST.chat.push({role:"user",content:t});bub("user",t);
+  const b=bub("assistant","Thinking…");
+  const h=ST.chat.slice(-12);while(h[0].role!="user")h.shift();
+  const inp=h.map((m,i)=>i?m:{...m,content:SYS()+"\n\nStudent: "+m.content});
+  try{
+    const r=await ask(inp,{cache:false,onText:({text})=>{b.innerHTML=md(text);$("#v").scrollTop=1e9}});
+    b.innerHTML=md(r.text);ST.chat.push({role:"assistant",content:r.text});
+  }catch(e){b.innerHTML="Error: "+esc(e.message||e.code);ST.chat.pop()}
+}
+
+/* ---------- Practice ---------- */
+function vPractice(){
+  if(ST.quiz)return showQ();
+  $("#v").innerHTML=`<div class="card pg"><h3 style="margin-top:0">Build a practice test</h3>
+<label class="f">Topic (optional)<input id="pt" placeholder="e.g. quadratics, cell division, WWI"></label>
+<div class="row"><label class="f">Questions<select id="pn"><option>5<option selected>10<option>15<option>20</select></label>
+<label class="f">Difficulty<select id="pd"><option>Easy<option selected>Medium<option>Hard<option>Mixed</select></label>
+<label class="f">Type<select id="py"><option value="mix">Mixed<option value="mc">Multiple choice<option value="open">Open-ended</select></label></div>
+<label><input type="checkbox" id="ptm"> Timed (1.5 min per question)</label><br>
+${ST.notes?'<label><input type="checkbox" id="pnt" checked> Use my uploaded notes</label><br>':""}
+<p style="color:var(--mu)">${ST.k=="n"?"Level: "+esc(ST.lvl)+" (change it in the top bar)":esc(ST.cls)+" exam-style questions"}</p>
+<button class="pri" id="go">Generate test</button><div id="st"></div></div>`;
+  $("#go").onclick=gen;
+}
+async function gen(){
+  const n=+$("#pn").value,d=$("#pd").value,y=$("#py").value,t=$("#pt").value.trim(),un=$("#pnt")&&$("#pnt").checked,tm=$("#ptm").checked;
+  $("#go").disabled=true;$("#st").textContent="Writing your test…";
+  const p=`Create a ${n}-question practice test for "${ST.cls}"${t?`, topic: ${t}`:""}. Style: ${sty()}. Difficulty: ${d}. Types: ${y=="mix"?"a mix of multiple choice and open-ended":y=="mc"?"all multiple choice":"all open-ended"}.${un?`\nBase the questions on these student notes:\n${ST.notes.slice(0,6000)}`:""}
+Return ONLY a JSON array. Each item: {"t":"mc" or "open","q":"question","c":["choice","choice","choice","choice"] (mc only),"a":0-3 index of correct choice (mc only),"m":"model answer / key points (open only)","e":"short worked explanation"}. Plain text/unicode math, no LaTeX.`;
+  try{
+    const q=await ask(p,{json:true,cache:false});
+    if(!Array.isArray(q)||!q.length)throw Error("Couldn't build the test. Try again.");
+    ST.quiz={q,t0:Date.now(),lim:tm?Math.round(q.length*90):0,done:false};showQ();
+  }catch(e){$("#st").textContent="Error: "+(e.message||e.code);$("#go").disabled=false}
+}
+function showQ(){
+  const Q=ST.quiz,q=Q.q;
+  $("#v").innerHTML=`<div class="pg"><div class="card" style="display:flex;justify-content:space-between"><b>${esc(ST.cls)} · ${q.length} questions</b><span id="tk"></span></div>`+q.map((x,i)=>`<div class="card"><b>${i+1}.</b> ${md(x.q)}${x.t=="mc"?(x.c||[]).map((c,j)=>`<label class="ch"><input type="radio" name="q${i}" value="${j}"> ${"ABCD"[j]}. ${esc(c)}</label>`).join(""):`<textarea class="o" id="o${i}" placeholder="Write your answer / show your work"></textarea>`}<div id="r${i}"></div></div>`).join("")+`<button class="pri" id="sb">Submit &amp; grade</button> <button id="ab">Cancel</button><div id="st"></div></div>`;
+  $("#sb").onclick=submit;
+  $("#ab").onclick=()=>{clearInterval(Q.iv);ST.quiz=null;render()};
+  clearInterval(Q.iv);
+  if(Q.lim&&!Q.done)Q.iv=setInterval(()=>{
+    const l=Q.lim-Math.round((Date.now()-Q.t0)/1000);
+    if($("#tk"))$("#tk").textContent="Time left "+Math.floor(Math.max(l,0)/60)+":"+String(Math.max(l,0)%60).padStart(2,"0");
+    if(l<=0)submit();
+  },500);
+}
+async function submit(){
+  const Q=ST.quiz;if(Q.done||!$("#sb"))return;
+  Q.done=true;clearInterval(Q.iv);$("#sb").disabled=true;$("#st").textContent="Grading…";
+  const q=Q.q,pts=q.map(()=>0),fb=[],open=[];
+  q.forEach((x,i)=>{
+    if(x.t=="mc"){const s=document.querySelector(`input[name=q${i}]:checked`);fb[i]=s?+s.value:-1;pts[i]=fb[i]==+x.a?1:0}
+    else open.push({i,question:x.q,key_points:x.m,student_answer:$("#o"+i).value});
+  });
+  if(open.length){
+    try{
+      const g=await ask(`Grade these student answers fairly, with partial credit. Blank answers get 0. Return ONLY a JSON array in the same order, each {"s":number from 0 to 1,"f":"1-2 sentence feedback"}.\n`+JSON.stringify(open.map(({i,...o})=>o)),{json:true,cache:false});
+      open.forEach((o,k)=>{pts[o.i]=Math.max(0,Math.min(1,+(g[k]&&g[k].s)||0));fb[o.i]=(g[k]&&g[k].f)||""});
+    }catch(e){open.forEach(o=>fb[o.i]="(Could not auto-grade this one.)")}
+  }
+  q.forEach((x,i)=>{
+    let h="";
+    if(x.t=="mc"){
+      document.querySelectorAll(`input[name=q${i}]`).forEach(inp=>{inp.disabled=true;const l=inp.parentElement,j=+inp.value;if(j==+x.a)l.classList.add("ok");else if(inp.checked)l.classList.add("no")});
+      h=`<p>${pts[i]?'<b style="color:var(--ok)">Correct</b>':fb[i]<0?'<b style="color:var(--mu)">Skipped</b>':'<b style="color:var(--bad)">Incorrect</b>'} · answer ${"ABCD"[+x.a]}</p>`;
+    }else{$("#o"+i).disabled=true;h=`<p>${Math.round(pts[i]*100)}% credit · ${esc(fb[i]||"")}</p><p><b>Model answer:</b> ${md(x.m||"")}</p>`}
+    $("#r"+i).innerHTML=h+`<p style="color:var(--mu)">${md(x.e||"")}</p>`;
+  });
+  const pct=Math.round(100*pts.reduce((a,b)=>a+b,0)/q.length);
+  addH({c:ST.cls,l:ST.k=="n"?ST.lvl:ST.k=="ap"?"AP":"Exam prep",p:pct,n:q.length,d:Date.now()});
+  $("#sb").remove();$("#ab").remove();$("#st").textContent="";
+  const missed=q.filter((x,i)=>pts[i]<1).slice(0,6).map(x=>x.q).join("\n");
+  const sm=document.createElement("div");sm.className="card";
+  sm.innerHTML=`<div class="big">${pct}%</div><div>${pct>=85?"Test-ready. Try a harder set to stay sharp.":pct>=70?"Solid. Review the misses below, then retest.":"Needs work. Ask the tutor to reteach the missed ideas."}</div><div class="acts"><button class="pri" id="nt">New test</button>${missed?'<button id="tm">Reteach what I missed</button>':""}</div>`;
+  $(".pg").prepend(sm);$("#v").scrollTop=0;
+  $("#nt").onclick=()=>{ST.quiz=null;render()};
+  if(missed)$("#tm").onclick=()=>{ST.quiz=null;ST.view="tutor";render();chat("I just took a practice test. Please reteach the ideas behind these questions I missed, with a short example for each:\n"+missed)};
+}
+
+/* ---------- Notes ---------- */
+function vNotes(){
+  $("#v").innerHTML=`<div class="card pg"><h3 style="margin-top:0">Notes studio</h3><p style="color:var(--mu);margin-top:0">Upload photos of notes or textbook pages, and/or paste text (lecture transcripts, YouTube captions, articles).</p>
+<input type="file" id="nf" accept="image/*" multiple><div id="nc" style="color:var(--mu);margin:6px 0">${ST.imgs.length?ST.imgs.length+" photo(s) ready":""}</div>
+<textarea class="o" id="nt" placeholder="Paste notes or a transcript here…"></textarea>
+<div class="acts"><button class="pri" data-a="g">Study guide</button><button data-a="f">Flashcards</button><button data-a="p">Practice test from notes</button></div><div id="no"></div></div>`;
+  $("#nf").onchange=e=>{ST.imgs=[...e.target.files].slice(0,6);$("#nc").textContent=ST.imgs.length+" photo(s) ready"};
+  $("#no").onclick=e=>{const c=e.target.closest(".fc");if(c)c.lastChild.hidden=!c.lastChild.hidden};
+  $(".acts").onclick=async e=>{
+    const a=e.target.dataset.a;if(!a)return;
+    const txt=$("#nt").value.trim();
+    if(!txt&&!ST.imgs.length)return alert("Add a photo or paste some text first.");
+    const o=$("#no");o.className="card";o.textContent="Reading your notes…";
+    const base=`Student course: ${ST.cls} (${sty()}).\nSource notes (photos and/or text):\n${txt}\n\n`;
+    try{
+      if(a=="g"||(a=="p"&&ST.imgs.length)){
+        const r=await ask(base+"Transcribe and clean up the notes, then write a study guide with: **Key ideas**, **Definitions and formulas**, a **worked example**, **Common mistakes**, and 3 self-test questions. Plain text/unicode math, no LaTeX.",{...im(),cache:false,onText:({text})=>{o.innerHTML=md(text)}});
+        ST.notes=txt+"\n"+r.text;o.innerHTML=md(r.text);
+      }else if(a=="p")ST.notes=txt;
+      if(a=="f"){
+        const c=await ask(base+'Make 12 flashcards. Return ONLY a JSON array of {"f":"front","b":"back"}.',{...im(),json:true,cache:false});
+        o.className="";o.innerHTML="<p style='color:var(--mu)'>Tap a card to flip.</p>"+c.map(x=>`<div class="card fc"><b>${esc(x.f)}</b><div hidden style="margin-top:8px">${esc(x.b)}</div></div>`).join("");
+      }
+      if(a=="p"){ST.view="practice";ST.quiz=null;render()}
+    }catch(err){o.textContent="Error: "+(err.message||err.code)}
+  };
+}
+
+/* ---------- Progress ---------- */
+async function vProg(){
+  const h=await getH();if(ST.view!="prog")return;const by={};h.forEach(r=>(by[r.c]=by[r.c]||[]).push(r.p));
+  $("#v").innerHTML=`<div class="pg"><div class="card"><h3 style="margin-top:0">Your progress</h3>${h.length?Object.entries(by).map(([c,a])=>{const m=Math.round(a.reduce((x,y)=>x+y)/a.length);return `<div style="margin:12px 0">${esc(c)} · avg ${m}% over ${a.length} test(s)<div style="height:8px;background:var(--p2);border-radius:9px;margin-top:4px"><div style="height:8px;width:${m}%;background:var(--ac);border-radius:9px"></div></div></div>`}).join(""):"<p>No tests yet. Build one in Practice.</p>"}</div>
+<div class="card"><b>Recent tests</b>${h.slice(-8).reverse().map(r=>`<div>${new Date(r.d).toLocaleDateString()} · ${esc(r.c)} (${esc(r.l)}) · ${r.n}Q · <b>${r.p}%</b></div>`).join("")||"<div>—</div>"}</div></div>`;
+}
+
+/* ---------- Wiring ---------- */
+$("#lv").innerHTML=LV.map(l=>`<option>${l}</option>`).join("");
+$("#lv").value=ST.lvl;
+$("#lv").onchange=e=>{ST.lvl=e.target.value};
+$("#side").onclick=e=>{const b=e.target.closest("button"),d=b?b.dataset:{};
+  if(d.th)return setTh(d.th);
+  if(d.a)return act(d.a);
+  if(d.c){ST.cls=d.c;ST.k=d.k;ST.open.add(d.g);ST.chat=[];ST.notes="";ST.imgs=[];ST.quiz&&clearInterval(ST.quiz.iv);ST.quiz=null;if(ST.view=="prog")ST.view="tutor";document.body.classList.remove("so");render()}};
+$("#side").addEventListener("toggle",e=>{const g=e.target.dataset.g;if(g)e.target.open?ST.open.add(g):ST.open.delete(g)},true);
+document.querySelector("nav").onclick=e=>{const v=e.target.dataset.v;if(v){ST.view=v;render()}};
+$("#hb").onclick=()=>document.body.classList.toggle("so");
+$("#sc").onclick=()=>document.body.classList.remove("so");
+$("#fm").onclick=()=>document.body.classList.toggle("focus");
+function setTh(t){ST.th=t;document.documentElement.dataset.th=t;try{localStorage.setItem("th",t)}catch(e){}side()}
+try{ST.th=localStorage.getItem("th")||"pine"}catch(e){}
+document.documentElement.dataset.th=ST.th;
+if(sb)sb.auth.onAuthStateChange((_e,ss)=>{USER=ss?ss.user:null;setTimeout(()=>{side();if(ST.view=="prog")vProg()},0)});
+render();
+</script>
+</body></html>
